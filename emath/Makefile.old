@@ -1,0 +1,91 @@
+##### #      ###   #### #####  ###  #   #  ###  ##### #   #
+#     #     #   # #       #   #   # ## ## #   #   #   #   #
+###   #     #####  ###    #   #   # # # # #####   #   #####
+#     #     #   #     #   #   #   # #   # #   #   #   #   #
+##### ##### #   # ####    #    ###  #   # #   #   #   #   #
+
+# Makefile for the Elastomath project
+# Modified to fit a more general approach
+# Basic concept: Elastomath is build in a set of utility trees:
+#   General - general stuff for all programs related to elastomath
+#   Emath   - the real BEM solver
+#   MUI     - Marks User Interface or something like that
+#
+# (c) 1996 by A.J. Bron
+# Elastomath (c) 1995 by Mark S. Peerdeman and Douwe Overdijk
+
+PROJECT = ${HOME}/elastomath
+EMATH = $(PROJECT)/emath
+INCLUDE = $(PROJECT)/include
+OBJECT = $(PROJECT)/object
+LIBRARY = $(PROJECT)/lib
+MAKE = $(PROJECT)/Makefile $(EMATH)/Makefile
+KERNEL = $(PROJECT)/bin/E_Kernel
+
+# Bunch of flag settings from Mark Superboy Peerdeman
+XFLAGS = -I${HOME}/elastomath/include -64 -mips4 -O3
+OLDFLAGS = -I${HOME}/elastomath/include -64 -mips4 -O3 -sopt,-r=3,-scalaropt=3,-ro=3,-chl=16,-l,-lo=s,-inline,-ind=5,-analysis
+SFLAGS = -I${HOME}/elastomath/include -O3 -OPT:fold_arith_limit=1273,IEEE_arithmetic=3 -float_const -64 -mips4 -O3 -sopt,-chs=16,-fuse,-inline,-ind=7,-l,-lo=klnps,-inll=5,-cplc=10
+
+# Final (?) compiler flag setting:
+
+CCFLAGS = -O3 -mips4 -64 -I$(INCLUDE)
+LIBFLAG = -L/usr/lib64/mips4
+GENFLAG = -L$(LIBRARY) -lgeneral
+
+EMATH_OBJ = $(OBJECT)/solve.o $(OBJECT)/do_linear.o $(OBJECT)/mickey.o \
+$(OBJECT)/post.o $(OBJECT)/do_contact.o $(OBJECT)/parse.o \
+$(OBJECT)/contactc.o $(OBJECT)/singular.o $(OBJECT)/gauss.o \
+$(OBJECT)/scale.o $(OBJECT)/linearc.o $(OBJECT)/mcheck.o 
+
+all: $(KERNEL)
+
+clean: clean_obj
+
+remove: clean_obj clean_kernel
+
+clean_obj:
+	/bin/rm $(EMATH_OBJ)
+
+clean_kernel:
+	/bin/rm $(KERNEL)
+
+$(KERNEL) : $(EMATH_OBJ) $(LIBRARY)/libgeneral.a
+	cc $(XFLAGS) $(EMATH_OBJ) $(LIBFLAG) $(GENFLAG) -lm -o $(KERNEL)
+
+$(OBJECT)/contactc.o : $(EMATH)/contactc.c $(INCLUDE)/contact.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/contactc.c -c -o $(OBJECT)/contactc.o
+
+$(OBJECT)/do_contact.o : $(EMATH)/do_contact.c $(INCLUDE)/do_contact.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/do_contact.c -c -o $(OBJECT)/do_contact.o
+
+$(OBJECT)/do_linear.o : $(EMATH)/do_linear.c $(INCLUDE)/do_linear.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/do_linear.c -c -o $(OBJECT)/do_linear.o
+
+$(OBJECT)/gauss.o : $(EMATH)/gauss.c $(INCLUDE)/gauss.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/gauss.c -c -o $(OBJECT)/gauss.o
+
+$(OBJECT)/linearc.o : $(EMATH)/linearc.c $(INCLUDE)/linear.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/linearc.c -c -o $(OBJECT)/linearc.o
+
+$(OBJECT)/mcheck.o : $(EMATH)/mcheck.c $(INCLUDE)/mcheck.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/mcheck.c -c -o $(OBJECT)/mcheck.o
+
+$(OBJECT)/mickey.o : $(EMATH)/mickey.c $(MAKE)
+	ikbeneenscript ; \
+	cc $(XFLAGS) $(EMATH)/mickey.c -c -o $(OBJECT)/mickey.o 
+
+$(OBJECT)/parse.o : $(EMATH)/parse.c $(INCLUDE)/parse.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/parse.c -c -o $(OBJECT)/parse.o
+
+$(OBJECT)/post.o : $(EMATH)/post.c $(INCLUDE)/post.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/post.c -c -o $(OBJECT)/post.o
+
+$(OBJECT)/scale.o : $(EMATH)/scale.c $(INCLUDE)/scale.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/scale.c -c -o $(OBJECT)/scale.o
+
+$(OBJECT)/singular.o : $(EMATH)/singular.c $(INCLUDE)/singular.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/singular.c -c -o $(OBJECT)/singular.o
+
+$(OBJECT)/solve.o : $(EMATH)/solve.c $(INCLUDE)/solve.h $(MAKE)
+	cc $(XFLAGS) $(EMATH)/solve.c -c -o $(OBJECT)/solve.o
