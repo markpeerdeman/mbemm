@@ -13,22 +13,21 @@
 #
 # Elastomath (c) 1995 by Mark S. Peerdeman and Douwe Overdijk
 
-PROJECT = .
-GENERAL = $(PROJECT)/src/general
-EMATH   = $(PROJECT)/src/emath
-INCLUDE = $(PROJECT)/src/include
-LIBRARY = $(PROJECT)/lib
+GENERAL = src/general
+EMATH   = src/emath
+INCLUDE = src/include
+LIBRARY = lib
 
 export PROJECT GENERAL EMATH INCLUDE OBJECT LIBRARY
 
 all: elastomath
 
 general_stuff:
-	@(cd $(GENERAL); make -f Makefile.Linux all)
+	@(cd $(GENERAL); make all)
 
 elastomath: general_stuff
-	@(cd $(EMATH); make -f Makefile.Linux all)
+	@(cd $(EMATH); make all)
 
 clean:
-	@(cd $(GENERAL); make -f Makefile.Linux clean)
-	@(cd $(EMATH); make -f Makefile.Linux clean)
+	@(cd $(GENERAL); make clean)
+	@(cd $(EMATH); make clean)
