@@ -1,0 +1,39 @@
+##### #      ###   #### #####  ###  #   #  ###  ##### #   #
+#     #     #   # #       #   #   # ## ## #   #   #   #   #
+###   #     #####  ###    #   #   # # # # #####   #   #####
+#     #     #   #     #   #   #   # #   # #   #   #   #   #
+##### ##### #   # ####    #    ###  #   # #   #   #   #   #
+
+# Makefile for the Elastomath project
+# Modified to fit a more general approach
+# Basic concept: Elastomath is build in a set of utility trees:
+#   General - general stuff for all programs related to elastomath
+#   Emath   - the real BEM solver
+#   MUI     - Marks User Interface or something like that
+#
+# (c) 1996 by A.J. Bron
+# Elastomath (c) 1995 by Mark S. Peerdeman and Douwe Overdijk
+
+PROJECT = /data/unix/elastomath
+GENERAL = $(PROJECT)/general
+EMATH   = $(PROJECT)/emath
+INCLUDE = $(PROJECT)/include
+OBJECT  = $(PROJECT)/IRIX64/object
+LIBRARY = $(PROJECT)/lib
+
+CC	= cc
+CCFLAGS	= -I$(INCLUDE) -O3 -OPT:fold_arith_limit=1273,IEEE_arithmetic=3 -float_const -64 -mips4 -O3 -sopt,-chs=16,-fuse,-inline,-ind=7,-l,-lo=klnps,-inll=5,-cplc=10
+
+export PROJECT GENERAL EMATH INCLUDE OBJECT LIBRARY CC CCFLAGS
+
+all: elastomath
+
+general_stuff:
+	@(cd $(GENERAL); make -f Makefile.Irix all)
+
+elastomath: general_stuff
+	@(cd $(EMATH); make -f Makefile.Irix all)
+
+clean:
+	@(cd $(GENERAL); make -f Makefile.Irix clean)
+	@(cd $(EMATH); make -f Makefile.Irix clean)

@@ -1,0 +1,77 @@
+##### #      ###   #### #####  ###  #   #  ###  ##### #   #
+#     #     #   # #       #   #   # ## ## #   #   #   #   #
+###   #     #####  ###    #   #   # # # # #####   #   #####
+#     #     #   #     #   #   #   # #   # #   #   #   #   #
+##### ##### #   # ####    #    ###  #   # #   #   #   #   #
+
+# Makefile for the Elastomath project
+# Modified to fit a more general approach
+# Basic concept: Elastomath is build in a set of utility trees:
+#   General - general stuff for all programs related to elastomath
+#   Emath   - the real BEM solver
+#   MUI     - Marks User Interface or something like that
+#
+# (c) 1996 by A.J. Bron
+# Elastomath (c) 1995 by Mark S. Peerdeman and Douwe Overdijk
+
+
+# PROJECT = /data/unix/elastomath
+# GENERAL = $(PROJECT)/general
+# EMATH   = $(PROJECT)/emath
+# INCLUDE = $(PROJECT)/include
+# OBJECT  = $(PROJECT)/object
+# LIBRARY = $(PROJECT)/lib
+MAKE = $(PROJECT)/Makefile.Linux $(GENERAL)/Makefile.Linux
+
+# Final (?) compiler flag setting:
+
+CC = gcc
+CCFLAGS = -O3 -I$(INCLUDE)
+
+GEN_OBJ = $(OBJECT)/cylgeom.o $(OBJECT)/elements.o $(OBJECT)/imatrices.o \
+$(OBJECT)/m_io.o $(OBJECT)/matrices.o $(OBJECT)/matrix.o $(OBJECT)/memstat.o \
+$(OBJECT)/points.o $(OBJECT)/restr.o $(OBJECT)/tril.o
+
+all: $(LIBRARY)/libgeneral.a
+
+clean: clean_obj clean_lib
+
+clean_obj:
+	/bin/rm $(GEN_OBJ)
+
+clean_lib:
+	/bin/rm $(LIBRARY)/libgeneral.a
+
+$(LIBRARY)/libgeneral.a : $(GEN_OBJ)
+	/bin/rm -f $(LIBRARY)/libgeneral.a
+	/usr/bin/ar ru $(LIBRARY)/libgeneral.a $(GEN_OBJ)
+
+$(OBJECT)/cylgeom.o : $(GENERAL)/cylgeom.c $(INCLUDE)/cylgeom.h $(MAKE)
+	$(CC) $(CCFLAGS) $(GENERAL)/cylgeom.c -c -o $(OBJECT)/cylgeom.o
+
+$(OBJECT)/elements.o : $(GENERAL)/elements.c $(INCLUDE)/elements.h $(MAKE)
+	$(CC) $(CCFLAGS) $(GENERAL)/elements.c -c -o $(OBJECT)/elements.o
+
+$(OBJECT)/imatrices.o : $(GENERAL)/imatrices.c $(INCLUDE)/imatrices.h $(MAKE)
+	$(CC) $(CCFLAGS) $(GENERAL)/imatrices.c -c -o $(OBJECT)/imatrices.o
+
+$(OBJECT)/m_io.o : $(GENERAL)/m_io.c $(INCLUDE)/m_io.h $(MAKE)
+	$(CC) $(CCFLAGS) $(GENERAL)/m_io.c -c -o $(OBJECT)/m_io.o
+
+$(OBJECT)/matrices.o : $(GENERAL)/matrices.c $(INCLUDE)/matrices.h $(MAKE)
+	$(CC) $(CCFLAGS) $(GENERAL)/matrices.c -c -o $(OBJECT)/matrices.o
+
+$(OBJECT)/matrix.o : $(GENERAL)/matrix.c $(INCLUDE)/matrix.h $(MAKE)
+	$(CC) $(CCFLAGS) $(GENERAL)/matrix.c -c -o $(OBJECT)/matrix.o
+
+$(OBJECT)/memstat.o : $(GENERAL)/memstat.c $(INCLUDE)/memstat.h $(MAKE)
+	$(CC) $(CCFLAGS) $(GENERAL)/memstat.c -c -o $(OBJECT)/memstat.o
+
+$(OBJECT)/points.o : $(GENERAL)/points.c $(INCLUDE)/points.h $(MAKE)
+	$(CC) $(CCFLAGS) $(GENERAL)/points.c -c -o $(OBJECT)/points.o
+
+$(OBJECT)/restr.o : $(GENERAL)/restr.c $(INCLUDE)/restr.h $(MAKE)
+	$(CC) $(CCFLAGS) $(GENERAL)/restr.c -c -o $(OBJECT)/restr.o
+
+$(OBJECT)/tril.o : $(GENERAL)/tril.c $(INCLUDE)/tril.h $(MAKE)
+	$(CC) $(CCFLAGS) $(GENERAL)/tril.c -c -o $(OBJECT)/tril.o

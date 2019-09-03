@@ -1,0 +1,194 @@
+
+const int SGNF=3;
+const int RNG=5;
+
+typedef struct matrixpi {
+  int rows;
+  int cols;
+  int **intmatrix;
+  int allocated;
+} *intmatrix;
+
+typedef struct vectorpi {
+  int rows;
+  int *data;
+} *intvector;
+
+extern void verwijdernullen(int m, int n, matrix M, matrix N1, matrix N2,
+intvector nietnul);
+extern float element(int i, int j, intvector nietnul, intmatrix X1,
+intmatrix X2);
+extern vector rij(int i, intvector nietnul, intmatrix X1, intmatrix X2);
+extern int nn(int i, int j, int lengte, matrix M, intvector nietnul);
+extern void maakint(matrix N, intmatrix X, int k);
+extern float elt(int m);
+
+int nn(int i, int j, int lengte, matrix M, vector nietnul)
+/* Zoekt de niet-nul kolommen op en slaat de index van deze kolommen
+	op in de vector nietnul en een nul in het andere geval */
+{
+int k,teller;
+
+teller=0;
+for (k=0;k<lengte;k++)
+	  if (M(M,i+k,j)!= 0)
+	  {
+	  teller++;
+	  nietnul(nietnul,i+k) = teller;
+	  }
+	  else nietnul(nietnul,i+k) = 0;
+return teller;
+}
+
+
+void verwijdernullen(int m, int n, matrix M, matrix N1, matrix N2,
+intvector nietnul)
+/* Transformeert de matrix M in een tweetal matrices N1 en N2 die ontstaan
+	uit M door uit respectievelijk de bovenste helft en de onderste helft
+	de nul-kolommen weg te halen */
+{
+int i,j,k,p,q;
+
+p=nn(1,m+1,n,M,nietnul);
+q=nn(m+1,1,m,M,nietnul);
+
+N1=M;
+k=0;
+for (j=m;j<m+n;j++)
+	{
+	if (nietnul(nietnul,j)!=0)
+		for (i=0;i<m;i++)
+			{
+			N1(N1,i,m+(k++))=M(M,i,j);
+			delete matrix[i]+m+p;
+			}
+	}
+N2=matrix[m]+m-q;
+k=1;
+for (j=0;j<m;j++)
+	{
+	if (nietnul(nietnul,j)!=0)
+		for (i=m;i<n+m;i++)
+			{
+			N2(N2,i,m-(k++))=M(M,i,j);
+			matrix[i]+m-q-1=null;
+			delete matrix[i];
+			}
+	}
+}
+
+float elt(int m)
+/* Berekent oorspronkelijke float element uit de integer m */
+{
+int a,b,p,q,r,s,t;
+
+if (m<0)
+	{
+	p=-m/10000;
+	m=-m-p*10000;
+	q=m/1000;
+	m=m-q*1000;
+	r=m/100;
+	m=m-r*100;
+	s=m/10;
+	t=m-s*10;
+	a=-100*r-10*s-t;
+	b=10*p+q-10-RNG;
+	return a*exp((b-2)*log(10));
+	}
+else
+	{
+	p=m/10000;
+	m=m-p*10000;
+	q=m/1000;
+	m=m-q*1000;
+	r=m/100;
+	m=m-r*100;
+	s=m/10;
+	t=m-s*10;
+	a=100*r+10*s+t;
+	b=10*p+q-10-RNG;
+	return a*exp((b-2)*log(10));
+	}
+}
+
+float element(int i, int j, intvector nietnul, intmatrix X1, intmatrix X2)
+/* Bepaalt het element (i,j) van de oorspronkelijke matrix M uit de integer
+	matrices	X1 en X2 */
+{
+if (i<m)
+	if (j<m)
+		return elt(N1(N1,i,j));
+	else	if (nietnul(nietnul,j)!=0)
+			return elt(N1(N1,i,m+nietnul(nietnul,j)-1));
+		else	return 0;
+else	if (j>=m)
+		return elt(N2(N2,i-m,j-m));
+	else	if (nietnul(nietnul,j)!=0)
+			return elt(N2(N2,i,m-nietnul(nietnul,j)));
+		else	return 0;
+}
+
+vector rij(int i, intvector nietnul, matrix N1, matrix N2)
+/* Bepaalt de rij i van de oorspronkelijke matrix M uit de matrices N1 en
+	N2 */
+{
+  vector derij;
+  int    j;
+
+  for (j=0; j<m; j++)
+	 if (i<m)
+		derij(derij,j) = elt(N1(N1,i,j));
+	 else
+		if (nietnul(nietnul,j)!=0)
+	derij(derij,j) = elt(N2(N2,i,m-nietnul(nietnul,j)));
+		else
+	derij(derij,j) = 0;
+  for (j=m; j<m+n; j++)
+	 if (i>=m)
+		derij(derij,j) = elt(N2(N2,i,j));
+	 else
+		if (nietnul(nietnul,j)!=0)
+	derij(derij,j) = elt(N1(N1,i,m+nietnul(nietnul,j)-1));
+		else
+	derij(derij,j) = 0;
+  return derij;
+}
+
+extern void maakint(matrix N, intmatrix X, int k, int l)
+/* Transformeert de float matrix N in een integer matrix die respectievelijk
+	de mantisse en de exponent van de originele waarden representeert */
+{
+  int i,j,a,b,c;
+
+  for (i=0; i<k; i++)
+	 for (j=0; j<l; j++)
+		{
+		b=floor((log(N(N,i,j))/log(10)));
+		a=N(N,i,j)*exp((2-b)*log(10));
+		c=10+RNG+b;
+		if (a<0)
+		  {
+		  r=floor(-a/100);
+		  a=-a-r*100;
+		  s=floor(a/10);
+		  t=a-s*10;
+		  p=floor(c/10);
+		  q=c-p*10;
+		  X(X,i,j)=-10000*p-1000*q-100*r-10*s-t;
+		  }
+		else
+		  {
+		  r=floor(a/100);
+		  a=a-r*100;
+		  s=floor(a/10);
+		  t=a-s*10;
+		  p=floor(c/10);
+		  q=c-p*10;
+		  X(X,i,j)=10000*p+1000*q+100*r+10*s+t;
+		  }
+		}
+}
+
+
+

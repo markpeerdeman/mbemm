@@ -1,2 +1,5 @@
 object/
 lib/
+bin/
+IRIX64/object
+Linux/object

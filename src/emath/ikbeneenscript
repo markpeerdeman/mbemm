@@ -1,0 +1,3 @@
+#!/bin/csh
+set datum=`/bin/date +"%A %B %d %Y, %H:%M"`
+echo 'fprintf(stderr,"                 '$datum'\\n");' > ../include/date_time.h
