@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#define double float  /* compile for floats... */ 
+/* #define double float */ /* compile for floats... */ 
 
 #define SGI
 
