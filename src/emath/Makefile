@@ -19,7 +19,7 @@ INCLUDE = $(PROJECT)/src/include
 OBJECT  = $(PROJECT)/obj
 LIBRARY = $(PROJECT)/lib
 MAKE    = $(PROJECT)/Makefile $(EMATH)/Makefile
-KERNEL  = $(PROJECT)/Linux/bin/E_Kernel
+KERNEL  = $(PROJECT)/bin/E_Kernel
 
 # Final (?) compiler flag setting:
 
