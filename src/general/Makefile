@@ -15,7 +15,6 @@
 # Elastomath (c) 1995 by Mark S. Peerdeman and Douwe Overdijk
 
 
-PROJECT = $(shell pwd)
 GENERAL = $(PROJECT)/src/general
 EMATH   = $(PROJECT)/src/emath
 INCLUDE = $(PROJECT)/src/include

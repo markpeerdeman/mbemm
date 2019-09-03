@@ -25,11 +25,11 @@ export PROJECT GENERAL EMATH INCLUDE OBJECT LIBRARY
 all: elastomath
 
 general_stuff:
-	@(cd $(GENERAL); make all)
+	@(cd $(GENERAL); make PROJECT="$(PROJECT)" all)
 
 elastomath: general_stuff
-	@(cd $(EMATH); make all)
+	@(cd $(EMATH); make PROJECT="$(PROJECT)" all)
 
 clean:
-	@(cd $(GENERAL); make clean)
-	@(cd $(EMATH); make clean)
+	@(cd $(GENERAL); make PROJECT="$(PROJECT)" clean)
+	@(cd $(EMATH); make PROJECT="$(PROJECT)" clean)
