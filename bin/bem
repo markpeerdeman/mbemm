@@ -1,2 +1,2 @@
 #!/bin/csh
-/usr/bin/time /data/unix/elastomath/bin/E_Kernel $1 $2 $3
+/usr/bin/time bin/E_Kernel $1 $2 $3
