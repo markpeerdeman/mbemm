@@ -14,7 +14,8 @@
 #include <math.h>
 /* #define double float */ /* compile for floats... */ 
 
-#define SGI
+/* #define SGI */
+#define ANSI
 
 #define YES 1
 #define NO  0
