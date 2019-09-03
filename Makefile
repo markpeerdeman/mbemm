@@ -13,11 +13,12 @@
 #
 # Elastomath (c) 1995 by Mark S. Peerdeman and Douwe Overdijk
 
-GENERAL = src/general
-EMATH   = src/emath
-INCLUDE = src/include
-OBJECT  = obj
-LIBRARY = lib
+PROJECT = $(shell pwd)
+GENERAL = $(PROJECT)/src/general
+EMATH   = $(PROJECT)/src/emath
+INCLUDE = $(PROJECT)/src/include
+OBJECT  = $(PROJECT)/obj
+LIBRARY = $(PROJECT)/lib
 
 export PROJECT GENERAL EMATH INCLUDE OBJECT LIBRARY
 
