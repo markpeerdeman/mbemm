@@ -16,6 +16,7 @@
 GENERAL = src/general
 EMATH   = src/emath
 INCLUDE = src/include
+OBJECT  = obj
 LIBRARY = lib
 
 export PROJECT GENERAL EMATH INCLUDE OBJECT LIBRARY
