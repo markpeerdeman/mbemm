@@ -13,12 +13,13 @@
 #
 # Elastomath (c) 1995 by Mark S. Peerdeman and Douwe Overdijk
 
-# PROJECT = /data/unix/elastomath
-# EMATH   = $(PROJECT)/emath
-# INCLUDE = $(PROJECT)/include
-# OBJECT  = $(PROJECT)/object
-# LIBRARY = $(PROJECT)/lib
-MAKE    = $(PROJECT)/Makefile.Linux $(EMATH)/Makefile.Linux
+PROJECT = $(shell pwd)
+GENERAL = $(PROJECT)/src/general
+EMATH   = $(PROJECT)/src/emath
+INCLUDE = $(PROJECT)/src/include
+OBJECT  = $(PROJECT)/obj
+LIBRARY = $(PROJECT)/lib
+MAKE    = $(PROJECT)/Makefile $(EMATH)/Makefile
 KERNEL  = $(PROJECT)/Linux/bin/E_Kernel
 
 # Final (?) compiler flag setting:
