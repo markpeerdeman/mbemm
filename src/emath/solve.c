@@ -324,8 +324,8 @@ void solve_4(matrix Ma, int m, int n,const vector F,intvector nietnul)
 	tel1++;
       }
 
-  printmatrix(hulpma,"Dr. Ir. Mark Peerdeman");
-  printvector(hulpve,"Ir. Mark Lebouille");
+  printmatrix(hulpma,"hulpmatrix");
+  printvector(hulpve,"hulpvector");
  
   printf("No 4\n");
 
