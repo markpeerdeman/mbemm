@@ -124,13 +124,13 @@ void process_results(mesh theMesh, vector resultvector)
   }
   
   printf("\n REACTION FORCES:\n");
-  printf(" Resulting net force vector (A):   [% 8.8 #E % 8.8 #E % 8.8 #E]\n",sax,say,saz);
-  printf(" Resulting net force vector (C):   [% 8.8 #E % 8.8 #E % 8.8 #E]\n",sfx,sfy,sfz);
-  printf(" Resulting net force vector (C,N): [% 8.8 #E % 8.8 #E % 8.8 #E]\n",sfx/fmax,sfy/fmax,sfz/fmax);
+  printf(" Resulting net force vector (A):   [% 8.8E % 8.8E % 8.8E]\n",sax,say,saz);
+  printf(" Resulting net force vector (C):   [% 8.8E % 8.8E % 8.8E]\n",sfx,sfy,sfz);
+  printf(" Resulting net force vector (C,N): [% 8.8E % 8.8E % 8.8E]\n",sfx/fmax,sfy/fmax,sfz/fmax);
   printf("\n ERRORS:\n");
-  printf(" Maximum traction error (N):        % 8.8 #E on element %d\n",dmax/fmax,dmaxe);
-  printf(" Average traction error (N):        % 8.8 #E\n",(sd/theMesh->nr_of_elements)/fmax);
-  printf(" Average traction error (S,N):      % 8.8 #E\n",(sqrt(sfx*sfx+sfy*sfy+sfz*sfz)/
+  printf(" Maximum traction error (N):        % 8.8E on element %d\n",dmax/fmax,dmaxe);
+  printf(" Average traction error (N):        % 8.8E\n",(sd/theMesh->nr_of_elements)/fmax);
+  printf(" Average traction error (S,N):      % 8.8E\n",(sqrt(sfx*sfx+sfy*sfy+sfz*sfz)/
                                                            theMesh->nr_of_elements)/fmax);
 
 } /* process_results */

@@ -91,7 +91,7 @@ void element_int(element elist)
   res1=res1*e->area;
   res2=res2*e->area;
   res3=res3*e->area;
-  printf("Force on element %4d (Analytical) is % 8.8#E %8.8#E %8.8#E\n",e->label,res1, res2, res3);
+  printf("Force on element %4d (Analytical) is % 8.8E %8.8E %8.8E\n",e->label,res1, res2, res3);
   e=e->NEXT;
   } /* while */
 }

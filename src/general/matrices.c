@@ -267,7 +267,7 @@ void printvector(vector v, char *text)
 { int i;
   printf("  Printvector: %s\n",text);
   for (i=1; i<=v->rows; i++)
-	printf(" % + 8.8E\n",V(v,i));
+	printf(" %+8.8E\n",V(v,i));
   text=text;
 } /* printvector */
 

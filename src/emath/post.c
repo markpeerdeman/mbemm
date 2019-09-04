@@ -178,7 +178,7 @@ void write_node_displacements(point plist)
 
   p=(point)point_dll(plist,START,0);
   while (p!=(point)NULL)
-  { printf(" %3d  % 5.8#E  % 5.8#E  % 5.8#E \n",p->label, p->dx, p->dy, p->dz );
+  { printf(" %3d  % 5.8E  % 5.8E  % 5.8E \n",p->label, p->dx, p->dy, p->dz );
     p=p->NEXT;
   }
 
@@ -197,7 +197,7 @@ void write_total_node_displacements(const point plist)
 
   p=(point)point_dll(plist,START,0);
   while (p!=(point)NULL)
-  { printf(" %3d  % 5.8#E  % 5.8#E  % 5.8#E \n",p->label, p->dx+p->x, p->dy+p->y, p->dz+p->z );
+  { printf(" %3d  % 5.8E  % 5.8E  % 5.8E \n",p->label, p->dx+p->x, p->dy+p->y, p->dz+p->z );
 	p=p->NEXT;
   }
 
@@ -216,7 +216,7 @@ void write_node_tractions(const point plist)
 
   p=(point)point_dll(plist,START,0);
   while (p!=(point)NULL)
-  { printf(" %3d  % 5.8#E  % 5.8#E  % 5.8#E \n",p->label, p->fx, p->fy, p->fz );
+  { printf(" %3d  % 5.8E  % 5.8E  % 5.8E \n",p->label, p->fx, p->fy, p->fz );
 	p=p->NEXT;
   }
 
@@ -259,7 +259,7 @@ void write_force(mesh theMesh)
 	fy= 1.0/3.0*(t1y+t2y+t3y)*e->area*theMesh->G_SCALE;
 	fz= 1.0/3.0*(t1z+t2z+t3z)*e->area*theMesh->G_SCALE;
 	fxt+=fx; fyt+=fy; fzt+=fz;
-	printf("%4d % 8.8#E % 8.8#E % 8.8#E\n", e->label,fx,fy,fz);
+	printf("%4d % 8.8E % 8.8E % 8.8E\n", e->label,fx,fy,fz);
 	e=e->NEXT;
   }
 
@@ -268,7 +268,7 @@ void write_force(mesh theMesh)
   printf("\n{---------------------------------------------------------------}\n");
   printf("{ POST output of the resulting force vector.\n");
   printf(" Force: %5.8E %5.8E %5.8E\n",fxt,fyt,fzt);
-  printf(" Modulus: %5.8#E\n",sqrt((double)(fxt*fxt+fyt*fyt+fzt*fzt)));
+  printf(" Modulus: %5.8E\n",sqrt((double)(fxt*fxt+fyt*fyt+fzt*fzt)));
 
 } /* write_force */
 
@@ -321,7 +321,7 @@ void write_contact_force(mesh theMesh)
 	midx/=3.0; midy/=3.0; midz/=3.0;
 	fxt+=fx; fyt+=fy; fzt+=fz;
         if (cnodes>0)
-	printf("%4d % 8.8#E % 8.8#E % 8.8#E % 8.8#E % 8.8#E % 8.8#E % 8.8#E %d \n", e->label,fx,fy,fz,e->area,midx, midy, midz,cnodes);
+	printf("%4d % 8.8E % 8.8E % 8.8E % 8.8E % 8.8E % 8.8E % 8.8E %d \n", e->label,fx,fy,fz,e->area,midx, midy, midz,cnodes);
 	e=e->NEXT;
   }
 
@@ -330,7 +330,7 @@ void write_contact_force(mesh theMesh)
   printf("\n{---------------------------------------------------------------}\n");
   printf("{ POST output of the resulting force vector.\n");
   printf(" Force: %5.8E %5.8E %5.8E\n",fxt,fyt,fzt);
-  printf(" Modulus: %5.8#E\n",sqrt((double)(fxt*fxt+fyt*fyt+fzt*fzt)));
+  printf(" Modulus: %5.8E\n",sqrt((double)(fxt*fxt+fyt*fyt+fzt*fzt)));
 
 } /* write_contact_force */
 
@@ -396,7 +396,7 @@ void write_edge_force(mesh theMesh)
             fz=fz/e->z1*theMesh->G_SCALE;
           }
 
-	  printf("%4d % 8.8#E % 8.8#E % 8.8#E (per unit length)\n", e->label,fx,fy,fz);
+	  printf("%4d % 8.8E % 8.8E % 8.8E (per unit length)\n", e->label,fx,fy,fz);
         }
     e=e->NEXT;
   }
@@ -406,7 +406,7 @@ void write_edge_force(mesh theMesh)
   printf("\n{---------------------------------------------------------------}\n");
   printf("{ POST output of the resulting force vector.\n");
   printf(" Force: %5.8E %5.8E %5.8E\n",fxt,fyt,fzt);
-  printf(" Modulus: %5.8#E\n",sqrt((double)(fxt*fxt+fyt*fyt+fzt*fzt)));
+  printf(" Modulus: %5.8E\n",sqrt((double)(fxt*fxt+fyt*fyt+fzt*fzt)));
 
 } /* write_contact_force */
 
@@ -424,7 +424,7 @@ void write_contact_node_tractions(const point plist)
   p=(point)point_dll(plist,START,0);
   while (p!=(point)NULL)
   { if (p->type==CNODE)
-        printf(" %3d  % 5.8#E  % 5.8#E  % 5.8#E, y:% 5.8#E \n",p->label, p->fx, p->fy, p->fz,p->y );
+        printf(" %3d  % 5.8E  % 5.8E  % 5.8E, y:% 5.8E \n",p->label, p->fx, p->fy, p->fz,p->y );
     p=p->NEXT;
   }
 
@@ -537,7 +537,7 @@ void write_distribution(mesh theMesh)
         e=e->NEXT;
       }
       tvx+=0.5*tex; tvy+=0.5*tey; tvz+=0.5*tez;
-      printf("%d % 8.8 #E % 8.8 #E % 8.8#E % 8.8 #E %8.8 #E % 8.8 #E\n",
+      printf("%d % 8.8E % 8.8E % 8.8E % 8.8E %8.8E % 8.8E\n",
 			  p->label,p->x, p->y, p->z ,tvx,tvy,tvz);
     }
     p=p->NEXT;
@@ -757,8 +757,8 @@ while (e!=(element)NULL)
 
   misesa = 1.0/sqrt(2.0)*sqrt( (s1a-s2a)*(s1a-s2a)+(s1a-s3a)*(s1a-s3a)+(s2a-s3a)*(s2a-s3a) );
   printf("%10d%10d\n",e->label,1);
-  printf(" % 1.5#E\n",(double)mises); 
-  /* printf("mises calculated is % 8.8 #E, mises (analytical) is % 8.8 #E, diff. is % 8.8 #E, rel diff is % 8.8 #E\n",
+  printf(" % 1.5E\n",(double)mises); 
+  /* printf("mises calculated is % 8.8 E, mises (analytical) is % 8.8 E, diff. is % 8.8 E, rel diff is % 8.8 E\n",
           mises,misesa, mises-misesa, (mises-misesa)/misesa ); */
  
   e=e->NEXT;
@@ -828,7 +828,7 @@ while (e!=(element)NULL)
   mises = 1.0/sqrt(2.0)*sqrt( (s1-s2)*(s1-s2)+(s1-s3)*(s1-s3)+(s2-s3)*(s2-s3) );
 
   printf("%10d%10d\n",e->label,1);
-  printf(" % 1.5#E\n",(double)mises);
+  printf(" % 1.5E\n",(double)mises);
 
   e=e->NEXT;
 }
@@ -849,7 +849,7 @@ void U_write_nodes(const point plist)
   while (p!=(point)NULL)
   { color=p->type; 
 	printf("%10d         1         1%10d\n",p->label,color);
-  	printf("  % 1.16#E  % 1.16#E  % 1.16#E\n",p->x,p->y,p->z); 
+  	printf("  % 1.16E  % 1.16E  % 1.16E\n",p->x,p->y,p->z); 
 	p=p->NEXT;
   }
   printf("    -1\n");
@@ -895,7 +895,7 @@ void U_write_displacements(const point plist)
   p=(point)point_dll(plist,START,0);
   while (p!=(point)NULL)
   {	printf("%10d\n",p->label);
-	printf(" % 1.5#E % 1.5#E % 1.5#E  0.00000E+00  0.00000E+00  0.00000E+00\n",
+	printf(" % 1.5E % 1.5E % 1.5E  0.00000E+00  0.00000E+00  0.00000E+00\n",
 	 (double)p->dx, (double)p->dy,
 	 (double)p->dz );
     p=p->NEXT;
@@ -930,7 +930,7 @@ void U_write_tractions(const point plist)
   p=(point)point_dll(plist,START,0);
   while (p!=(point)NULL)
   { printf("%10d\n",p->label);
-    printf(" % 1.5#E % 1.5#E % 1.5#E  0.00000E+00  0.00000E+00  0.00000E+00\n",
+    printf(" % 1.5E % 1.5E % 1.5E  0.00000E+00  0.00000E+00  0.00000E+00\n",
      (double)p->fx, (double)p->fy,
      (double)p->fz );
     p=p->NEXT;
@@ -948,7 +948,7 @@ void post(mesh theMesh,int nr_of_nodes_body_1)
 { 
 
 /**** ElastoMATH SPECIAL output **********************************************/
-if ((WRITE_SPECIAL==YES))
+if (WRITE_SPECIAL==YES)
 { /* do some results output: */
   fprintf(stderr,"* writing output in BEM format\n");
   evaluate_level(GREEN,41);
