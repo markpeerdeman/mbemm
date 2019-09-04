@@ -13,6 +13,7 @@
 #include <linear.h>
 #include <m_io.h>
 #include <gauss.h>
+#include <parse.h>
 
 void make_restraints(mesh theMesh)
 { point p;

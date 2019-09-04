@@ -10,12 +10,6 @@
 #define M(mx,therow,thecol) (mx->matrix[therow][thecol])
 #define V(vector,therow)        (vector->data[therow])
 
-
-extern void   verwijdernullen(int m, int n, matrix Ma, intvector nietnul,point po);
-extern double hetelement(int m, int i, int j, intvector nietnul, matrix Ma);
-extern void   rij(int m, int n, int i, intvector nietnul, matrix Ma, vector derij);
-extern void   nn(int m, intvector nietnul,point po); 
-
 extern int p,q;
 
 int p,q;

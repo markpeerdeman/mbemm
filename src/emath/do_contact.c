@@ -5,9 +5,11 @@
 #include <contact.h>
 #include <solve.h>
 #include <matrices.h>
+#include <matrix.h>
 #include <imatrices.h>
 #include <post.h>
 #include <memstat.h>
+#include <scale.h>
 
 /*****************************************************************************/
 void find_contactnodes(cmesh theCmesh)

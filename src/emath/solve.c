@@ -30,6 +30,7 @@
 #include <m_io.h>
 //#include <unistd.h>
 #include <imatrices.h>
+#include <matrix.h>
 
 #define TOL 1.0e-90
 
