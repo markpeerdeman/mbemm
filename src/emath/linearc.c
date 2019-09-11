@@ -182,44 +182,6 @@ void makeUFandTFlocal( matrix u, matrix t,
 
 } /* makeUFandTF */
 
-
-void matcopy3x3local( matrix source, matrix dest )
-{ M(dest,1,1)=M(source,1,1);
-  M(dest,1,2)=M(source,1,2);
-  M(dest,1,3)=M(source,1,3);
-  M(dest,2,1)=M(source,2,1);
-  M(dest,2,2)=M(source,2,2);
-  M(dest,2,3)=M(source,2,3);
-  M(dest,3,1)=M(source,3,1);
-  M(dest,3,2)=M(source,3,2);
-  M(dest,3,3)=M(source,3,3);
-} /* matcopy3x3 */
-
-
-void matsum3x3local( matrix a, matrix b )
-{ M(a,1,1) += M(b,1,1);
-  M(a,1,2) += M(b,1,2);
-  M(a,1,3) += M(b,1,3);
-  M(a,2,1) += M(b,2,1);
-  M(a,2,2) += M(b,2,2);
-  M(a,2,3) += M(b,2,3);
-  M(a,3,1) += M(b,3,1);
-  M(a,3,2) += M(b,3,2);
-  M(a,3,3) += M(b,3,3);
-}
-
-void scalemat3x3local( matrix a, double b )
-{ M(a,1,1) *= b;
-  M(a,1,2) *= b;
-  M(a,1,3) *= b;
-  M(a,2,1) *= b;
-  M(a,2,2) *= b;
-  M(a,2,3) *= b;
-  M(a,3,1) *= b;
-  M(a,3,2) *= b;
-  M(a,3,3) *= b;
-}
-
 /****************************************************************************/
 void printstatus(mesh theMesh) /* prints database/memory statistics */
 { point p; element e; restraint t; restraint d; long m_size;
@@ -427,34 +389,34 @@ void norm_int(element te, hypermatrix c, hypermatrix e)
 
   for (i=1; i<=7; i++) 
   { /* node 1: */
-    matcopy3x3local(tf[i],temp);
-    scalemat3x3local(temp,xi1[i]*w[i]);
-    matsum3x3local(e->data[1],temp); 
-    matcopy3x3local(uf[i],temp);
-    scalemat3x3local(temp,xi1[i]*w[i]);
-    matsum3x3local(c->data[1],temp); 
+    matcopy3x3(tf[i],temp);
+    scalemat3x3(temp,xi1[i]*w[i]);
+    matsum3x3(e->data[1],temp); 
+    matcopy3x3(uf[i],temp);
+    scalemat3x3(temp,xi1[i]*w[i]);
+    matsum3x3(c->data[1],temp); 
 
     /* node 2: */
-    matcopy3x3local(tf[i],temp);
-    scalemat3x3local(temp,xi2[i]*w[i]);
-    matsum3x3local(e->data[2],temp); 
-    matcopy3x3local(uf[i],temp);
-    scalemat3x3local(temp,xi2[i]*w[i]); 
-    matsum3x3local(c->data[2],temp); 
+    matcopy3x3(tf[i],temp);
+    scalemat3x3(temp,xi2[i]*w[i]);
+    matsum3x3(e->data[2],temp); 
+    matcopy3x3(uf[i],temp);
+    scalemat3x3(temp,xi2[i]*w[i]); 
+    matsum3x3(c->data[2],temp); 
 
     /* node 3: */
-    matcopy3x3local(tf[i],temp);
-    scalemat3x3local(temp,xi3[i]*w[i]);
-    matsum3x3local(e->data[3],temp); 
-    matcopy3x3local(uf[i],temp);
-    scalemat3x3local(temp,xi3[i]*w[i]);
-    matsum3x3local(c->data[3],temp); 
+    matcopy3x3(tf[i],temp);
+    scalemat3x3(temp,xi3[i]*w[i]);
+    matsum3x3(e->data[3],temp); 
+    matcopy3x3(uf[i],temp);
+    scalemat3x3(temp,xi3[i]*w[i]);
+    matsum3x3(c->data[3],temp); 
 
   } 
   /* scale the results with the jacobian: */
   for (i=1; i<=3; i++)
-  { scalemat3x3local(e->data[i],te->area);
-    scalemat3x3local(c->data[i],te->area);
+  { scalemat3x3(e->data[i],te->area);
+    scalemat3x3(c->data[i],te->area);
   }
 
 } /* norm_int() */
@@ -507,14 +469,14 @@ void make_row(point sourcenode, hypermatrix crow, hypermatrix erow,
   while (fieldelement!=(element)NULL)
   { collocate(sourcenode,fieldelement,c,e);
     
-    matsum3x3local(crow->data[fieldelement->p1],c->data[1]);
-    matsum3x3local(erow->data[fieldelement->p1],e->data[1]);
+    matsum3x3(crow->data[fieldelement->p1],c->data[1]);
+    matsum3x3(erow->data[fieldelement->p1],e->data[1]);
 
-    matsum3x3local(crow->data[fieldelement->p2],c->data[2]);
-    matsum3x3local(erow->data[fieldelement->p2],e->data[2]);
+    matsum3x3(crow->data[fieldelement->p2],c->data[2]);
+    matsum3x3(erow->data[fieldelement->p2],e->data[2]);
 
-    matsum3x3local(crow->data[fieldelement->p3],c->data[3]);
-    matsum3x3local(erow->data[fieldelement->p3],e->data[3]);
+    matsum3x3(crow->data[fieldelement->p3],c->data[3]);
+    matsum3x3(erow->data[fieldelement->p3],e->data[3]);
 
     fieldelement=fieldelement->NEXT;
   }
@@ -523,10 +485,10 @@ void make_row(point sourcenode, hypermatrix crow, hypermatrix erow,
   fillmatrix(erow->data[sourcenode->label],ZEROFILL);
   for (i=1; i<=n_nodes; i++)
   { if (i!=sourcenode->label)
-    { matsum3x3local(erow->data[sourcenode->label],erow->data[i]);
+    { matsum3x3(erow->data[sourcenode->label],erow->data[i]);
     }  
   }
-  scalemat3x3local(erow->data[sourcenode->label],-1.0);
+  scalemat3x3(erow->data[sourcenode->label],-1.0);
 
 } /* make_row */
 
@@ -542,8 +504,8 @@ void remap(hypermatrix crow, hypermatrix erow, point sourcenode, mesh theMesh)
   /* swap some matrix items: */
   d=(restraint)restraint_dll(theMesh->mesh_d,START,0);
   while (d!=(restraint)NULL)
-  { scalemat3x3local(erow->data[d->label],-1.0);
-    scalemat3x3local(crow->data[d->label],-1.0);
+  { scalemat3x3(erow->data[d->label],-1.0);
+    scalemat3x3(crow->data[d->label],-1.0);
     tmp = erow->data[d->label];
     erow->data[d->label]=crow->data[d->label];
     crow->data[d->label]=tmp;
