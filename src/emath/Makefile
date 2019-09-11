@@ -31,7 +31,8 @@ GENFLAG = -L$(LIBRARY) -lgeneral
 EMATH_OBJ = $(OBJECT)/solve.o $(OBJECT)/do_linear.o $(OBJECT)/mickey.o \
 $(OBJECT)/post.o $(OBJECT)/do_contact.o $(OBJECT)/parse.o \
 $(OBJECT)/contactc.o $(OBJECT)/singular.o $(OBJECT)/gauss.o \
-$(OBJECT)/scale.o $(OBJECT)/linearc.o $(OBJECT)/mcheck.o 
+$(OBJECT)/scale.o $(OBJECT)/linearc.o $(OBJECT)/mcheck.o \
+$(OBJECT)/fsol3d.o
 
 all: $(KERNEL)
 
@@ -81,6 +82,9 @@ $(OBJECT)/scale.o : $(EMATH)/scale.c $(INCLUDE)/scale.h $(MAKE)
 
 $(OBJECT)/singular.o : $(EMATH)/singular.c $(INCLUDE)/singular.h $(MAKE)
 	$(CC) $(CCFLAGS) $(EMATH)/singular.c -c -o $(OBJECT)/singular.o
+
+$(OBJECT)/fsol3d.o : $(EMATH)/fsol3d.c $(INCLUDE)/fsol3d.h $(MAKE)
+	$(CC) $(CCFLAGS) $(EMATH)/fsol3d.c -c -o $(OBJECT)/fsol3d.o
 
 $(OBJECT)/solve.o : $(EMATH)/solve.c $(INCLUDE)/solve.h $(MAKE)
 	$(CC) $(CCFLAGS) $(EMATH)/solve.c -c -o $(OBJECT)/solve.o
