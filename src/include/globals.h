@@ -36,6 +36,7 @@ extern double poissons_ratio;
 extern int CURRENT_STATUS;
 extern int WRITE_UNIVERSAL;
 extern int WRITE_SPECIAL;
+extern int LARGE_DISPLACEMENTS;
 extern int READ_SOLUTION;
 
 typedef struct meshtyp {
