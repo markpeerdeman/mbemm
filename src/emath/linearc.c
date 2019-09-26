@@ -46,181 +46,8 @@ double w[]   = { 0.00000000, 0.22500000, 0.12593918, 0.12593918,
  *       because this function calculates some mesh properties like the 
  *       number of elements and nodes etc...
  */
-
-
-void makeUFandTFlocal( matrix u, matrix t,
-		  double s1, double s2, double s3,
-		  double c1, double c2, double c3,
-		  double n1, double n2, double n3 )
-/* matrices u and t are filled with the fundamental solutions,
- * s1, s2 and s3 are the sourcepoint coordinates,
- * c1, c2 and c3 are the collocation point coordinates
- * n1, n1 and n3 are the normal vector components
- */
-{ double r, /* distance sourcenode to fieldnode (rho) */
-	 rd1, /* rho,1 (i.e. drho/dx1) */
-	 rd2, /* rho,2 (i.e. drho/dx2) */
-	 rd3, /* rho,3 (i.e. drho/dx3) */
-	  C1, /* constant */
-	  C2, /* constant */
-	 rdn, /* rho,j nj (i.e. rho,1n1 + rho,2n2 + rho,3n3) */
-	 tmp, /* variabele */
-	   A, /* variabeles too */
-	   B,
-	   C,
-	   D;
-
-
-  rd1 = c1-s1; /* this are not the definitive values! */
-  rd2 = c2-s2;
-  rd3 = c3-s3;
-  /* calculate rho: */
-  r  = rd1 * rd1;
-  r += (rd2 * rd2);
-  r += (rd3 * rd3);
-  r  = sqrt(r);
-  rd1 = rd1/r;   /* definitive values of rdx */
-  rd2 = rd2/r;
-  rd3 = rd3/r;
-
-  C1 = (1.0+NU)/r;
-  C2 = 3.0 - 4.0*NU; C2 = C1*C2;
-
-  /* calculate fundamental solution displacement matrix: */
-  M(u,1,1)  = C1;
-  M(u,1,1) *= rd1;
-  M(u,1,1) *= rd1;
-  M(u,1,1) += C2;
-  M(u,2,2)  = C1;
-  M(u,2,2) *= rd2;
-  M(u,2,2) *= rd2;
-  M(u,2,2) += C2;
-  M(u,3,3)  = C1;
-  M(u,3,3) *= rd3;
-  M(u,3,3) *= rd3;
-  M(u,3,3) += C2;
-  M(u,1,2)  = C1;
-  M(u,1,2) *= rd1;
-  M(u,1,2) *= rd2;
-  M(u,2,1)  = M(u,1,2);
-  M(u,1,3)  = C1;
-  M(u,1,3) *= rd1;
-  M(u,1,3) *= rd3;
-  M(u,3,1)  = M(u,1,3);
-  M(u,2,3)  = C1;
-  M(u,2,3) *= rd2;
-  M(u,2,3) *= rd3;
-  M(u,3,2)  = M(u,2,3);
-
-  /* assign values for processing speed: */
-  C1  = r;
-  C1 *= r;
-  C1  = -1.0/C1;
-  C2  = 1.0 - 2.0*NU;
-  C2 *= C1;
-  rdn = rd1*n1+rd2*n2+rd3*n3;
-
-  /* calculate fundamental solution traction matrix: */
-  /* first the diagonal terms: */
-  A  = 3.0;
-  A *= C1;
-  A *= rdn; 
-  B  = C2;
-  B *= rdn;
-  M(t,1,1)  = rd1; 
-  M(t,1,1) *= rd1;
-  M(t,1,1) *= A;
-  M(t,1,1) += B;
-  M(t,2,2)  = rd2;
-  M(t,2,2) *= rd2;
-  M(t,2,2) *= A;
-  M(t,2,2) += B;
-  M(t,3,3)  = rd3;
-  M(t,3,3) *= rd3;
-  M(t,3,3) *= A;
-  M(t,3,3) += B;
-  /* Now do the off diagonal terms: */
-  C  = A;
-  C *= rd1;
-  C *= rd2;
-  D  = n2;
-  D *= rd1;
-  B  = n1;
-  B *= rd2;
-  B -= D;
-  B *= C2;
-  M(t,1,2)  = C;
-  M(t,1,2) += B;
-  M(t,2,1)  = C;
-  M(t,2,1) -= B;
-  C  = A;
-  C *= rd1;
-  C *= rd3;
-  D  = n3;
-  D *= rd1;
-  B  = n1;
-  B *= rd3;
-  B -= D;
-  B *= C2;
-  M(t,1,3)  = C;
-  M(t,1,3) += B;
-  M(t,3,1)  = C;
-  M(t,3,1) -= B;
-  C  = A;
-  C *= rd2;
-  C *= rd3;
-  D  = n3;
-  D *= rd2;
-  B  = n2;
-  B *= rd3;
-  B -= D;
-  B *= C2;
-  M(t,2,3)  = C;
-  M(t,2,3) += B;
-  M(t,3,2)  = C;
-  M(t,3,2) -= B;
-
-} /* makeUFandTF */
-
-
-void matcopy3x3local( matrix source, matrix dest )
-{ M(dest,1,1)=M(source,1,1);
-  M(dest,1,2)=M(source,1,2);
-  M(dest,1,3)=M(source,1,3);
-  M(dest,2,1)=M(source,2,1);
-  M(dest,2,2)=M(source,2,2);
-  M(dest,2,3)=M(source,2,3);
-  M(dest,3,1)=M(source,3,1);
-  M(dest,3,2)=M(source,3,2);
-  M(dest,3,3)=M(source,3,3);
-} /* matcopy3x3 */
-
-
-void matsum3x3local( matrix a, matrix b )
-{ M(a,1,1) += M(b,1,1);
-  M(a,1,2) += M(b,1,2);
-  M(a,1,3) += M(b,1,3);
-  M(a,2,1) += M(b,2,1);
-  M(a,2,2) += M(b,2,2);
-  M(a,2,3) += M(b,2,3);
-  M(a,3,1) += M(b,3,1);
-  M(a,3,2) += M(b,3,2);
-  M(a,3,3) += M(b,3,3);
-}
-
-void scalemat3x3local( matrix a, double b )
-{ M(a,1,1) *= b;
-  M(a,1,2) *= b;
-  M(a,1,3) *= b;
-  M(a,2,1) *= b;
-  M(a,2,2) *= b;
-  M(a,2,3) *= b;
-  M(a,3,1) *= b;
-  M(a,3,2) *= b;
-  M(a,3,3) *= b;
-}
-
 /****************************************************************************/
+
 void printstatus(mesh theMesh) /* prints database/memory statistics */
 { point p; element e; restraint t; restraint d; long m_size;
 fprintf(stderr,"\n=================================================================\n");
@@ -410,7 +237,7 @@ double cx, cy, cz;  /* fieldpoint coordinates */
    { cx = xi1[i]*e->p1x + xi2[i]*e->p2x + xi3[i]*e->p3x;
      cy = xi1[i]*e->p1y + xi2[i]*e->p2y + xi3[i]*e->p3y;
      cz = xi1[i]*e->p1z + xi2[i]*e->p2z + xi3[i]*e->p3z;
-     makeUFandTFlocal(uf[i],tf[i],sn->x,sn->y,sn->z,cx,cy,cz,e->nx,e->ny,e->nz);
+     makeUFandTF(uf[i],tf[i],sn->x,sn->y,sn->z,cx,cy,cz,e->nx,e->ny,e->nz);
    }
 
 } /* init_normal_integration() */
@@ -427,34 +254,34 @@ void norm_int(element te, hypermatrix c, hypermatrix e)
 
   for (i=1; i<=7; i++) 
   { /* node 1: */
-    matcopy3x3local(tf[i],temp);
-    scalemat3x3local(temp,xi1[i]*w[i]);
-    matsum3x3local(e->data[1],temp); 
-    matcopy3x3local(uf[i],temp);
-    scalemat3x3local(temp,xi1[i]*w[i]);
-    matsum3x3local(c->data[1],temp); 
+    matcopy3x3(tf[i],temp);
+    scalemat3x3(temp,xi1[i]*w[i]);
+    matsum3x3(e->data[1],temp); 
+    matcopy3x3(uf[i],temp);
+    scalemat3x3(temp,xi1[i]*w[i]);
+    matsum3x3(c->data[1],temp); 
 
     /* node 2: */
-    matcopy3x3local(tf[i],temp);
-    scalemat3x3local(temp,xi2[i]*w[i]);
-    matsum3x3local(e->data[2],temp); 
-    matcopy3x3local(uf[i],temp);
-    scalemat3x3local(temp,xi2[i]*w[i]); 
-    matsum3x3local(c->data[2],temp); 
+    matcopy3x3(tf[i],temp);
+    scalemat3x3(temp,xi2[i]*w[i]);
+    matsum3x3(e->data[2],temp); 
+    matcopy3x3(uf[i],temp);
+    scalemat3x3(temp,xi2[i]*w[i]); 
+    matsum3x3(c->data[2],temp); 
 
     /* node 3: */
-    matcopy3x3local(tf[i],temp);
-    scalemat3x3local(temp,xi3[i]*w[i]);
-    matsum3x3local(e->data[3],temp); 
-    matcopy3x3local(uf[i],temp);
-    scalemat3x3local(temp,xi3[i]*w[i]);
-    matsum3x3local(c->data[3],temp); 
+    matcopy3x3(tf[i],temp);
+    scalemat3x3(temp,xi3[i]*w[i]);
+    matsum3x3(e->data[3],temp); 
+    matcopy3x3(uf[i],temp);
+    scalemat3x3(temp,xi3[i]*w[i]);
+    matsum3x3(c->data[3],temp); 
 
   } 
   /* scale the results with the jacobian: */
   for (i=1; i<=3; i++)
-  { scalemat3x3local(e->data[i],te->area);
-    scalemat3x3local(c->data[i],te->area);
+  { scalemat3x3(e->data[i],te->area);
+    scalemat3x3(c->data[i],te->area);
   }
 
 } /* norm_int() */
@@ -507,14 +334,14 @@ void make_row(point sourcenode, hypermatrix crow, hypermatrix erow,
   while (fieldelement!=(element)NULL)
   { collocate(sourcenode,fieldelement,c,e);
     
-    matsum3x3local(crow->data[fieldelement->p1],c->data[1]);
-    matsum3x3local(erow->data[fieldelement->p1],e->data[1]);
+    matsum3x3(crow->data[fieldelement->p1],c->data[1]);
+    matsum3x3(erow->data[fieldelement->p1],e->data[1]);
 
-    matsum3x3local(crow->data[fieldelement->p2],c->data[2]);
-    matsum3x3local(erow->data[fieldelement->p2],e->data[2]);
+    matsum3x3(crow->data[fieldelement->p2],c->data[2]);
+    matsum3x3(erow->data[fieldelement->p2],e->data[2]);
 
-    matsum3x3local(crow->data[fieldelement->p3],c->data[3]);
-    matsum3x3local(erow->data[fieldelement->p3],e->data[3]);
+    matsum3x3(crow->data[fieldelement->p3],c->data[3]);
+    matsum3x3(erow->data[fieldelement->p3],e->data[3]);
 
     fieldelement=fieldelement->NEXT;
   }
@@ -523,10 +350,10 @@ void make_row(point sourcenode, hypermatrix crow, hypermatrix erow,
   fillmatrix(erow->data[sourcenode->label],ZEROFILL);
   for (i=1; i<=n_nodes; i++)
   { if (i!=sourcenode->label)
-    { matsum3x3local(erow->data[sourcenode->label],erow->data[i]);
+    { matsum3x3(erow->data[sourcenode->label],erow->data[i]);
     }  
   }
-  scalemat3x3local(erow->data[sourcenode->label],-1.0);
+  scalemat3x3(erow->data[sourcenode->label],-1.0);
 
 } /* make_row */
 
@@ -542,8 +369,8 @@ void remap(hypermatrix crow, hypermatrix erow, point sourcenode, mesh theMesh)
   /* swap some matrix items: */
   d=(restraint)restraint_dll(theMesh->mesh_d,START,0);
   while (d!=(restraint)NULL)
-  { scalemat3x3local(erow->data[d->label],-1.0);
-    scalemat3x3local(crow->data[d->label],-1.0);
+  { scalemat3x3(erow->data[d->label],-1.0);
+    scalemat3x3(crow->data[d->label],-1.0);
     tmp = erow->data[d->label];
     erow->data[d->label]=crow->data[d->label];
     crow->data[d->label]=tmp;

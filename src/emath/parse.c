@@ -216,6 +216,14 @@ void write_special_req(void)
 } /* write_special_req */
 
 /***************************************************************************/
+void large_displacements_req(void)
+/* This function sets the global switch for large displacments analysis */
+{ LARGE_DISPLACEMENTS=YES;
+  evaluate_level(GREEN,69);
+} /* large_displacements_req */
+
+
+/***************************************************************************/
 /***************************************************************************/
 void parse(char *name, mesh theMesh)
 /* This is the main parse function. This function is called somewhere from
@@ -238,8 +246,9 @@ void parse(char *name, mesh theMesh)
     if (!strcmp(theKeyword,"MATERIAL"))      read_material(fp); else
     if (!strcmp(theKeyword,"WRITE_UNIVERSAL")) write_universal_req(); else
     if (!strcmp(theKeyword,"WRITE_SPECIAL")) write_special_req(); else
+    if (!strcmp(theKeyword,"LARGE_DISPLACEMENTS")) large_displacements_req(); else
     if (!strcmp(theKeyword,"CNODES"))        skip_C_nodes(fp); else
-	if (!strcmp(theKeyword,"SOLUTION"))		 skip_solutionvector(fp); else
+    if (!strcmp(theKeyword,"SOLUTION"))	     skip_solutionvector(fp); else
     if (!strcmp(theKeyword,"END"))           break; else
     evaluate_level(YELLOW,53);
   }

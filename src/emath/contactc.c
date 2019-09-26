@@ -46,181 +46,8 @@ double cw[]   = { 0.00000000, 0.22500000, 0.12593918, 0.12593918,
  *       because this function calculates some mesh properties like the 
  *       number of elements and nodes etc...
  */
-
-
-void makeUFandTFlocalc( matrix u, matrix t,
-		  double s1, double s2, double s3,
-		  double c1, double c2, double c3,
-		  double n1, double n2, double n3 )
-/* matrices u and t are filled with the fundamental solutions,
- * s1, s2 and s3 are the sourcepoint coordinates,
- * c1, c2 and c3 are the collocation point coordinates
- * n1, n1 and n3 are the normal vector components
- */
-{ double r, /* distance sourcenode to fieldnode (rho) */
-	 rd1, /* rho,1 (i.e. drho/dx1) */
-	 rd2, /* rho,2 (i.e. drho/dx2) */
-	 rd3, /* rho,3 (i.e. drho/dx3) */
-	  C1, /* constant */
-	  C2, /* constant */
-	 rdn, /* rho,j nj (i.e. rho,1n1 + rho,2n2 + rho,3n3) */
-	 tmp, /* variabele */
-	   A, /* variabeles too */
-	   B,
-	   C,
-	   D;
-
-
-  rd1 = c1-s1; /* this are not the definitive values! */
-  rd2 = c2-s2;
-  rd3 = c3-s3;
-  /* calculate rho: */
-  r  = rd1 * rd1;
-  r += (rd2 * rd2);
-  r += (rd3 * rd3);
-  r  = sqrt(r);
-  rd1 = rd1/r;   /* definitive values of rdx */
-  rd2 = rd2/r;
-  rd3 = rd3/r;
-
-  C1 = (1.0+NU)/r;
-  C2 = 3.0 - 4.0*NU; C2 = C1*C2;
-
-  /* calculate fundamental solution displacement matrix: */
-  M(u,1,1)  = C1;
-  M(u,1,1) *= rd1;
-  M(u,1,1) *= rd1;
-  M(u,1,1) += C2;
-  M(u,2,2)  = C1;
-  M(u,2,2) *= rd2;
-  M(u,2,2) *= rd2;
-  M(u,2,2) += C2;
-  M(u,3,3)  = C1;
-  M(u,3,3) *= rd3;
-  M(u,3,3) *= rd3;
-  M(u,3,3) += C2;
-  M(u,1,2)  = C1;
-  M(u,1,2) *= rd1;
-  M(u,1,2) *= rd2;
-  M(u,2,1)  = M(u,1,2);
-  M(u,1,3)  = C1;
-  M(u,1,3) *= rd1;
-  M(u,1,3) *= rd3;
-  M(u,3,1)  = M(u,1,3);
-  M(u,2,3)  = C1;
-  M(u,2,3) *= rd2;
-  M(u,2,3) *= rd3;
-  M(u,3,2)  = M(u,2,3);
-
-  /* assign values for processing speed: */
-  C1  = r;
-  C1 *= r;
-  C1  = -1.0/C1;
-  C2  = 1.0 - 2.0*NU;
-  C2 *= C1;
-  rdn = rd1*n1+rd2*n2+rd3*n3;
-
-  /* calculate fundamental solution traction matrix: */
-  /* first the diagonal terms: */
-  A  = 3.0;
-  A *= C1;
-  A *= rdn; 
-  B  = C2;
-  B *= rdn;
-  M(t,1,1)  = rd1; 
-  M(t,1,1) *= rd1;
-  M(t,1,1) *= A;
-  M(t,1,1) += B;
-  M(t,2,2)  = rd2;
-  M(t,2,2) *= rd2;
-  M(t,2,2) *= A;
-  M(t,2,2) += B;
-  M(t,3,3)  = rd3;
-  M(t,3,3) *= rd3;
-  M(t,3,3) *= A;
-  M(t,3,3) += B;
-  /* Now do the off diagonal terms: */
-  C  = A;
-  C *= rd1;
-  C *= rd2;
-  D  = n2;
-  D *= rd1;
-  B  = n1;
-  B *= rd2;
-  B -= D;
-  B *= C2;
-  M(t,1,2)  = C;
-  M(t,1,2) += B;
-  M(t,2,1)  = C;
-  M(t,2,1) -= B;
-  C  = A;
-  C *= rd1;
-  C *= rd3;
-  D  = n3;
-  D *= rd1;
-  B  = n1;
-  B *= rd3;
-  B -= D;
-  B *= C2;
-  M(t,1,3)  = C;
-  M(t,1,3) += B;
-  M(t,3,1)  = C;
-  M(t,3,1) -= B;
-  C  = A;
-  C *= rd2;
-  C *= rd3;
-  D  = n3;
-  D *= rd2;
-  B  = n2;
-  B *= rd3;
-  B -= D;
-  B *= C2;
-  M(t,2,3)  = C;
-  M(t,2,3) += B;
-  M(t,3,2)  = C;
-  M(t,3,2) -= B;
-
-} /* makeUFandTFc */
-
-
-void matcopy3x3localc( matrix source, matrix dest )
-{ M(dest,1,1)=M(source,1,1);
-  M(dest,1,2)=M(source,1,2);
-  M(dest,1,3)=M(source,1,3);
-  M(dest,2,1)=M(source,2,1);
-  M(dest,2,2)=M(source,2,2);
-  M(dest,2,3)=M(source,2,3);
-  M(dest,3,1)=M(source,3,1);
-  M(dest,3,2)=M(source,3,2);
-  M(dest,3,3)=M(source,3,3);
-} /* matcopy3x3 */
-
-
-void matsum3x3localc( matrix a, matrix b )
-{ M(a,1,1) += M(b,1,1);
-  M(a,1,2) += M(b,1,2);
-  M(a,1,3) += M(b,1,3);
-  M(a,2,1) += M(b,2,1);
-  M(a,2,2) += M(b,2,2);
-  M(a,2,3) += M(b,2,3);
-  M(a,3,1) += M(b,3,1);
-  M(a,3,2) += M(b,3,2);
-  M(a,3,3) += M(b,3,3);
-}
-
-void scalemat3x3localc( matrix a, double b )
-{ M(a,1,1) *= b;
-  M(a,1,2) *= b;
-  M(a,1,3) *= b;
-  M(a,2,1) *= b;
-  M(a,2,2) *= b;
-  M(a,2,3) *= b;
-  M(a,3,1) *= b;
-  M(a,3,2) *= b;
-  M(a,3,3) *= b;
-}
-
 /****************************************************************************/
+
 void printstatusc(mesh theMesh) /* prints database/memory statistics */
 { point p; element e; restraint t; restraint d; long m_size; int lab;
 fprintf(stderr,"\n=================================================================\n");
@@ -386,7 +213,7 @@ double cx, cy, cz;  /* fieldpoint coordinates */
    { cx = cxi1[i]*e->p1x + cxi2[i]*e->p2x + cxi3[i]*e->p3x;
      cy = cxi1[i]*e->p1y + cxi2[i]*e->p2y + cxi3[i]*e->p3y;
      cz = cxi1[i]*e->p1z + cxi2[i]*e->p2z + cxi3[i]*e->p3z;
-     makeUFandTFlocalc(cuf[i],ctf[i],sn->x,sn->y,sn->z,cx,cy,cz,e->nx,e->ny,e->nz);
+     makeUFandTF(cuf[i],ctf[i],sn->x,sn->y,sn->z,cx,cy,cz,e->nx,e->ny,e->nz);
    }
 
 } /* init_normal_integrationc() */
@@ -403,34 +230,34 @@ void norm_intc(element te, hypermatrix c, hypermatrix e)
 
   for (i=1; i<=7; i++) 
   { /* node 1: */
-    matcopy3x3localc(ctf[i],ctemp);
-    scalemat3x3localc(ctemp,cxi1[i]*cw[i]);
-    matsum3x3localc(e->data[1],ctemp); 
-    matcopy3x3localc(cuf[i],ctemp);
-    scalemat3x3localc(ctemp,cxi1[i]*cw[i]);
-    matsum3x3localc(c->data[1],ctemp); 
+    matcopy3x3(ctf[i],ctemp);
+    scalemat3x3(ctemp,cxi1[i]*cw[i]);
+    matsum3x3(e->data[1],ctemp); 
+    matcopy3x3(cuf[i],ctemp);
+    scalemat3x3(ctemp,cxi1[i]*cw[i]);
+    matsum3x3(c->data[1],ctemp); 
 
     /* node 2: */
-    matcopy3x3localc(ctf[i],ctemp);
-    scalemat3x3localc(ctemp,cxi2[i]*cw[i]);
-    matsum3x3localc(e->data[2],ctemp); 
-    matcopy3x3localc(cuf[i],ctemp);
-    scalemat3x3localc(ctemp,cxi2[i]*cw[i]); 
-    matsum3x3localc(c->data[2],ctemp); 
+    matcopy3x3(ctf[i],ctemp);
+    scalemat3x3(ctemp,cxi2[i]*cw[i]);
+    matsum3x3(e->data[2],ctemp); 
+    matcopy3x3(cuf[i],ctemp);
+    scalemat3x3(ctemp,cxi2[i]*cw[i]); 
+    matsum3x3(c->data[2],ctemp); 
 
     /* node 3: */
-    matcopy3x3localc(ctf[i],ctemp);
-    scalemat3x3localc(ctemp,cxi3[i]*cw[i]);
-    matsum3x3localc(e->data[3],ctemp); 
-    matcopy3x3localc(cuf[i],ctemp);
-    scalemat3x3localc(ctemp,cxi3[i]*cw[i]);
-    matsum3x3localc(c->data[3],ctemp); 
+    matcopy3x3(ctf[i],ctemp);
+    scalemat3x3(ctemp,cxi3[i]*cw[i]);
+    matsum3x3(e->data[3],ctemp); 
+    matcopy3x3(cuf[i],ctemp);
+    scalemat3x3(ctemp,cxi3[i]*cw[i]);
+    matsum3x3(c->data[3],ctemp); 
 
   } 
   /* scale the results with the jacobian: */
   for (i=1; i<=3; i++)
-  { scalemat3x3localc(e->data[i],te->area);
-    scalemat3x3localc(c->data[i],te->area);
+  { scalemat3x3(e->data[i],te->area);
+    scalemat3x3(c->data[i],te->area);
   }
 
 } /* norm_intc() */
@@ -491,14 +318,14 @@ void make_rowc(point sourcenode, hypermatrix crow, hypermatrix erow,
           (fieldelement->label>theCMesh->nr_of_elements_basemesh)) )
     { collocatec(sourcenode,fieldelement,c,e);
 
-      matsum3x3localc(crow->data[fieldelement->p1],c->data[1]);
-      matsum3x3localc(erow->data[fieldelement->p1],e->data[1]);
+      matsum3x3(crow->data[fieldelement->p1],c->data[1]);
+      matsum3x3(erow->data[fieldelement->p1],e->data[1]);
 
-      matsum3x3localc(crow->data[fieldelement->p2],c->data[2]);
-      matsum3x3localc(erow->data[fieldelement->p2],e->data[2]);
+      matsum3x3(crow->data[fieldelement->p2],c->data[2]);
+      matsum3x3(erow->data[fieldelement->p2],e->data[2]);
 
-      matsum3x3localc(crow->data[fieldelement->p3],c->data[3]);
-      matsum3x3localc(erow->data[fieldelement->p3],e->data[3]);
+      matsum3x3(crow->data[fieldelement->p3],c->data[3]);
+      matsum3x3(erow->data[fieldelement->p3],e->data[3]);
     }
 
     fieldelement=fieldelement->NEXT;
@@ -508,10 +335,10 @@ void make_rowc(point sourcenode, hypermatrix crow, hypermatrix erow,
   fillmatrix(erow->data[sourcenode->label],ZEROFILL);
   for (i=1; i<=cn_nodes; i++)
   { if (i!=sourcenode->label)
-    { matsum3x3localc(erow->data[sourcenode->label],erow->data[i]);
+    { matsum3x3(erow->data[sourcenode->label],erow->data[i]);
     }  
   }
-  scalemat3x3localc(erow->data[sourcenode->label],-1.0);
+  scalemat3x3(erow->data[sourcenode->label],-1.0);
 
 } /* make_rowc */
 
@@ -648,8 +475,8 @@ void make_a_old(point row_node, hypermatrix crow, hypermatrix erow, cmesh theCMe
       if (current_node->type==CNODE)
       { makelocalsystem(tramat,current_node); 
         if (current_node->label<=theCMesh->nr_of_nodes_basemesh)
-        { matcopy3x3localc(crow->data[current_node->label],ctemp); matmul(crow->data[current_node->label],ctemp,tramat);
-          matcopy3x3localc(erow->data[current_node->label],ctemp); matmul(erow->data[current_node->label],ctemp,tramat);
+        { matcopy3x3(crow->data[current_node->label],ctemp); matmul(crow->data[current_node->label],ctemp,tramat);
+          matcopy3x3(erow->data[current_node->label],ctemp); matmul(erow->data[current_node->label],ctemp,tramat);
           H(crow,1,2,current_node->label)=-H(erow,1,2,current_node->label);
           H(crow,2,2,current_node->label)=-H(erow,2,2,current_node->label);
           H(crow,3,2,current_node->label)=-H(erow,3,2,current_node->label);
@@ -658,10 +485,10 @@ void make_a_old(point row_node, hypermatrix crow, hypermatrix erow, cmesh theCMe
           H(crow,3,3,current_node->label)=-H(erow,3,3,current_node->label);
         }
         else
-        { matcopy3x3localc(crow->data[current_node->label],ctemp); matmul(crow->data[current_node->label],ctemp,tramat);
-          matcopy3x3localc(erow->data[current_node->label],ctemp); matmul(erow->data[current_node->label],ctemp,tramat);
-          matcopy3x3localc(erow->data[current_node->label],crow->data[current_node->label]);
-          scalemat3x3localc(crow->data[current_node->label],-1.0);
+        { matcopy3x3(crow->data[current_node->label],ctemp); matmul(crow->data[current_node->label],ctemp,tramat);
+          matcopy3x3(erow->data[current_node->label],ctemp); matmul(erow->data[current_node->label],ctemp,tramat);
+          matcopy3x3(erow->data[current_node->label],crow->data[current_node->label]);
+          scalemat3x3(crow->data[current_node->label],-1.0);
         }
       }
       else /* if current_node is not a CNODE */
@@ -678,8 +505,8 @@ void make_a_old(point row_node, hypermatrix crow, hypermatrix erow, cmesh theCMe
           V(B,3)=V(B,3)-H(crow,3,1,current_node->label)*t1 
                        -H(crow,3,2,current_node->label)*t2
                        -H(crow,3,3,current_node->label)*t3;
-          matcopy3x3localc(erow->data[current_node->label],crow->data[current_node->label]);
-          scalemat3x3localc(crow->data[current_node->label],-1.0);
+          matcopy3x3(erow->data[current_node->label],crow->data[current_node->label]);
+          scalemat3x3(crow->data[current_node->label],-1.0);
         }
         else /* i.e. the displacement is prescribed */
         { V(B,1)=V(B,1)+H(erow,1,1,current_node->label)*r->u1 
@@ -700,8 +527,8 @@ void make_a_old(point row_node, hypermatrix crow, hypermatrix erow, cmesh theCMe
       if (current_node->label<=theCMesh->nr_of_nodes_basemesh) 
       { if (current_node->type==CNODE)
         { makelocalsystem(tramat,current_node); 
-          matcopy3x3localc(crow->data[current_node->label],ctemp); matmul(crow->data[current_node->label],ctemp,tramat);
-          matcopy3x3localc(erow->data[current_node->label],ctemp); matmul(erow->data[current_node->label],ctemp,tramat);
+          matcopy3x3(crow->data[current_node->label],ctemp); matmul(crow->data[current_node->label],ctemp,tramat);
+          matcopy3x3(erow->data[current_node->label],ctemp); matmul(erow->data[current_node->label],ctemp,tramat);
           H(crow,1,1,current_node->label)=-H(crow,1,1,current_node->label);
           H(crow,2,1,current_node->label)=-H(crow,2,1,current_node->label);
           H(crow,3,1,current_node->label)=-H(crow,3,1,current_node->label);
@@ -719,8 +546,8 @@ void make_a_old(point row_node, hypermatrix crow, hypermatrix erow, cmesh theCMe
       else /* i.e. nodes not on the same body, current_node on body 2 */
       { if (current_node->type==CNODE)
         { makelocalsystem(tramat,current_node); 
-          matcopy3x3localc(crow->data[current_node->label],ctemp); matmul(crow->data[current_node->label],ctemp,tramat);
-          matcopy3x3localc(erow->data[current_node->label],ctemp); matmul(erow->data[current_node->label],ctemp,tramat);
+          matcopy3x3(crow->data[current_node->label],ctemp); matmul(crow->data[current_node->label],ctemp,tramat);
+          matcopy3x3(erow->data[current_node->label],ctemp); matmul(erow->data[current_node->label],ctemp,tramat);
           fillmatrix(crow->data[current_node->label],ZEROFILL);
           H(crow,1,1,current_node->label)=-H(erow,1,1,current_node->label);
           H(crow,2,1,current_node->label)=-H(erow,2,1,current_node->label);
@@ -767,8 +594,8 @@ void make_a(point i, hypermatrix crow, hypermatrix erow, cmesh theCMesh)
     { if (j->type==CNODE)
       { /* transform to local coordinates: */
 	makelocalsystem(tramat,j);
-        matcopy3x3localc(crow->data[j->label],ctemp); matmul(crow->data[j->label],ctemp,tramat);
-        matcopy3x3localc(erow->data[j->label],ctemp); matmul(erow->data[j->label],ctemp,tramat);
+        matcopy3x3(crow->data[j->label],ctemp); matmul(crow->data[j->label],ctemp,tramat);
+        matcopy3x3(erow->data[j->label],ctemp); matmul(erow->data[j->label],ctemp,tramat);
 	/* make the submatrix for j: */
 	H(crow,1,2,j->label)=-H(erow,1,2,j->label);
 	H(crow,2,2,j->label)=-H(erow,2,2,j->label);
@@ -795,8 +622,8 @@ void make_a(point i, hypermatrix crow, hypermatrix erow, cmesh theCMesh)
           V(B,3)=V(B,3)-H(crow,3,1,j->label)*t1 
                        -H(crow,3,2,j->label)*t2
                        -H(crow,3,3,j->label)*t3;
-          matcopy3x3localc(erow->data[j->label],crow->data[j->label]);
-          scalemat3x3localc(crow->data[j->label],-1.0);
+          matcopy3x3(erow->data[j->label],crow->data[j->label]);
+          scalemat3x3(crow->data[j->label],-1.0);
         }
         else /* i.e. the displacement is prescribed */
         { V(B,1)=V(B,1)+H(erow,1,1,j->label)*r->u1 
@@ -815,15 +642,15 @@ void make_a(point i, hypermatrix crow, hypermatrix erow, cmesh theCMesh)
     { if (j->type==CNODE)
       { /* transform to local coordinates: */
 	makelocalsystem(tramat,j);
-        matcopy3x3localc(crow->data[j->label],ctemp); matmul(crow->data[j->label],ctemp,tramat);
-        matcopy3x3localc(erow->data[j->label],ctemp); matmul(erow->data[j->label],ctemp,tramat);
+        matcopy3x3(crow->data[j->label],ctemp); matmul(crow->data[j->label],ctemp,tramat);
+        matcopy3x3(erow->data[j->label],ctemp); matmul(erow->data[j->label],ctemp,tramat);
 	/* make the submatrix for j->connecting: */
 	H(crow,1,1,j->conn)=-H(crow,1,1,j->label);
 	H(crow,2,1,j->conn)=-H(crow,2,1,j->label);
 	H(crow,3,1,j->conn)=-H(crow,3,1,j->label);
 	/* make the submatrix for j: */
-        matcopy3x3localc(erow->data[j->label],crow->data[j->label]);
-        scalemat3x3localc(crow->data[j->label],-1.0);
+        matcopy3x3(erow->data[j->label],crow->data[j->label]);
+        scalemat3x3(crow->data[j->label],-1.0);
       }
       else
       { r=(restraint)restraint_dll(theCMesh->merged_mesh->mesh_d,SEARCH,j->label);
@@ -839,8 +666,8 @@ void make_a(point i, hypermatrix crow, hypermatrix erow, cmesh theCMesh)
           V(B,3)=V(B,3)-H(crow,3,1,j->label)*t1 
                        -H(crow,3,2,j->label)*t2
                        -H(crow,3,3,j->label)*t3;
-          matcopy3x3localc(erow->data[j->label],crow->data[j->label]);
-          scalemat3x3localc(crow->data[j->label],-1.0);
+          matcopy3x3(erow->data[j->label],crow->data[j->label]);
+          scalemat3x3(crow->data[j->label],-1.0);
         }
         else /* i.e. the displacement is prescribed */
         { V(B,1)=V(B,1)+H(erow,1,1,j->label)*r->u1 

@@ -31,6 +31,7 @@ matrix main_E; vector main_f; vector main_u;
 int  WRITE_UNIVERSAL;
 int  WRITE_SPECIAL;
 int  READ_SOLUTION;
+int  LARGE_DISPLACEMENTS;
 
 int allocated_matrices=0;
 int freed_matrices=0;
@@ -43,6 +44,7 @@ int main(const int argc, char *argv[] )
 { WRITE_SPECIAL = NO;
   WRITE_UNIVERSAL = NO;
   READ_SOLUTION = NO;
+  LARGE_DISPLACEMENTS = NO;
 #include <text.h>
 
   if (argc>1000) {}; /* this is pure nonsense to pull the compiler's leg */

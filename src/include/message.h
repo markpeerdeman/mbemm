@@ -56,6 +56,7 @@ char *message(const int mnr)
   case 66:  tm = "parse() request for writing UNIVERSAL processed"; break;
   case 67:  tm = "parse() request for writing SPECIAL processed"; break;
   case 68:  tm = "parse() There is no output requested"; break;
+  case 69:  tm = "parse() request for LARGE_DISPLACEMENTS analysis"; break;
   /* messages from elements.c: */
   case 70:  tm = "newelement() unable to allocate memory for elementstructure"; break;
   case 71:  tm = "element_dll(SEARCH) requested element not found"; break;
