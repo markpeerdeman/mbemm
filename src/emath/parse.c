@@ -218,7 +218,7 @@ void write_special_req(void)
 /***************************************************************************/
 void large_displacements_req(void)
 /* This function sets the global switch for large displacments analysis */
-{ 
+{ LARGE_DISPLACEMENTS=YES;
   evaluate_level(GREEN,69);
 } /* large_displacements_req */
 
