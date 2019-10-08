@@ -34,8 +34,9 @@ extern double poissons_ratio;
 #include <restr.h>
 
 extern int CURRENT_STATUS;
-extern int WRITE_UNIVERSAL;
-extern int WRITE_SPECIAL;
+extern int WRITE_UNIVERSAL; /* write Ideas Universal file */
+extern int WRITE_SPECIAL; /* write Mark's custom format */
+extern int WRITE_OBJ; /* write .obj alias wavefront format */
 extern int LARGE_DISPLACEMENTS;
 extern int READ_SOLUTION;
 

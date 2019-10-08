@@ -904,8 +904,6 @@ void U_write_displacements(const point plist)
   printf("    -1\n");
 } /* U_write_displacements() */
 
-
-
 void U_write_tractions(const point plist)
 { point p;
   printf("    -1\n");
@@ -939,6 +937,37 @@ void U_write_tractions(const point plist)
   printf("    -1\n");
 } /* U_write_tractions() */
 
+
+/****************************************************************************/
+/* .OBJ FILE OUTPUT
+ ****************************************************************************/
+void O_write_deformed_elements_as_faces(mesh themesh)
+{
+  element e; 
+  point node1, node2, node3;
+
+  printf("# Output created by mbemm - boundary elements method software\n");
+  printf("# Element topology is lost.\n");
+
+  e=(element)element_dll(themesh->mesh_e,START,0);
+  while (e!=(element)NULL)
+  {
+    node1 = (point)point_dll(themesh->mesh_p,SEARCH,e->p1);
+    printf(" v  % 5.8E  % 5.8E  % 5.8E \n", node1->dx+node1->x, 
+      node1->dy+node1->y, node1->dz+node1->z );
+    node2 = (point)point_dll(themesh->mesh_p,SEARCH,e->p2);
+    printf(" v  % 5.8E  % 5.8E  % 5.8E \n", node2->dx+node2->x, 
+      node2->dy+node2->y, node2->dz+node2->z );
+    node3 = (point)point_dll(themesh->mesh_p,SEARCH,e->p3);
+    printf(" v  % 5.8E  % 5.8E  % 5.8E \n", node3->dx+node3->x, 
+      node3->dy+node3->y, node3->dz+node3->z );
+
+    printf(" f -3 -2 -1\n");
+
+    e=e->NEXT;
+  }
+
+} /* O_write_deformed_elements_as_faces() */
 
 
 /****************************************************************************/
@@ -980,6 +1009,15 @@ if (WRITE_UNIVERSAL==YES)
   write_edge_force(theMesh);
   write_contact_node_tractions(theMesh->mesh_p); 
   write_distribution(theMesh); */
+}
+
+/**** .OBJ output **********************************************/
+if (WRITE_OBJ==YES)
+{ /* do some results output: */
+  fprintf(stderr,"* writing output in .OBJ format\n");
+  evaluate_level(GREEN,44);
+  init_post(main_f, theMesh, nr_of_nodes_body_1);
+  O_write_deformed_elements_as_faces(theMesh);
 }
 
 } /* post */

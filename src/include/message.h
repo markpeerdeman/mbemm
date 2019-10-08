@@ -38,6 +38,7 @@ char *message(const int mnr)
   case 41:  tm = "main() Program ready"; break;
   case 42:  tm = "main() Writing output as universal file"; break;
   case 43:  tm = "main() Writing output as Elastomath Special file"; break;
+  case 44:  tm = "main() Writing output as .OBJ file"; break;
   /* messages from parsing functions: */
   case 50:  tm = "parse() inputdeck file not found"; break;
   case 51:  tm = "parse() parsing inputdeck"; break;
@@ -53,6 +54,7 @@ char *message(const int mnr)
   case 61:  tm = "parse() completing element data"; break;
   case 62:  tm = "parsing material data"; break;
   case 63:  tm = "no material data in deck, using defaults"; break;
+  case 65:  tm = "parse() request for writing .OBJ processed"; break;
   case 66:  tm = "parse() request for writing UNIVERSAL processed"; break;
   case 67:  tm = "parse() request for writing SPECIAL processed"; break;
   case 68:  tm = "parse() There is no output requested"; break;

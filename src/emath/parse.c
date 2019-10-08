@@ -204,6 +204,7 @@ void write_universal_req(void)
 /* This function sets the global switch for writing universal files */
 { WRITE_UNIVERSAL=YES;
   WRITE_SPECIAL=NO;
+  WRITE_OBJ=NO;
   /*evaluate_level(GREEN,66);*/
 } /* write_universal_req */
 
@@ -212,8 +213,18 @@ void write_special_req(void)
 /* This function sets the global switch for writing the special format */
 { WRITE_SPECIAL=YES;
   WRITE_UNIVERSAL=NO;
+  WRITE_OBJ=NO;
   /* evaluate_level(GREEN,67); */
 } /* write_special_req */
+
+/***************************************************************************/
+void write_obj_req(void)
+/* This function sets the global switch for writing the .OBJ format */
+{ WRITE_SPECIAL=NO;
+  WRITE_UNIVERSAL=NO;
+  WRITE_OBJ=YES;
+  evaluate_level(GREEN,65);
+} /* write_obj_req */
 
 /***************************************************************************/
 void large_displacements_req(void)
@@ -246,6 +257,7 @@ void parse(char *name, mesh theMesh)
     if (!strcmp(theKeyword,"MATERIAL"))      read_material(fp); else
     if (!strcmp(theKeyword,"WRITE_UNIVERSAL")) write_universal_req(); else
     if (!strcmp(theKeyword,"WRITE_SPECIAL")) write_special_req(); else
+    if (!strcmp(theKeyword,"WRITE_OBJ"))     write_obj_req(); else
     if (!strcmp(theKeyword,"LARGE_DISPLACEMENTS")) large_displacements_req(); else
     if (!strcmp(theKeyword,"CNODES"))        skip_C_nodes(fp); else
     if (!strcmp(theKeyword,"SOLUTION"))	     skip_solutionvector(fp); else
@@ -253,7 +265,7 @@ void parse(char *name, mesh theMesh)
     evaluate_level(YELLOW,53);
   }
 
-  if ((WRITE_SPECIAL==NO)&&(WRITE_UNIVERSAL==NO))
+  if ((WRITE_SPECIAL==NO)&&(WRITE_UNIVERSAL==NO)&&(WRITE_OBJ==NO))
   { evaluate_level(YELLOW,68);
   }
 
