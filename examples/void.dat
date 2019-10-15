@@ -2858,4 +2858,5 @@ end_tractions
 
 
 { mui processing ready }
-write_universal
+write_obj
+

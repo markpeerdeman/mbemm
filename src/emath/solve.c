@@ -28,7 +28,6 @@
 #include <globals.h>
 #include <solve.h>
 #include <m_io.h>
-//#include <unistd.h>
 #include <imatrices.h>
 #include <matrix.h>
 
@@ -86,7 +85,9 @@ double Delta(const int i, const int j)
 
 void check_dimensions(const matrix A,const vector F)
 { if( (A->rows!=A->cols) || (A->rows!=F->rows) )
-  evaluate_level(RED,30);
+  { evaluate_level(RED,30);
+  }
+  fprintf(stderr,"Matrix size: %ld, %ld\n",(long)A->cols,(long)A->rows);
 } /* check_dimensions */
 
 
@@ -100,11 +101,8 @@ void solve_4(matrix Ma, int m, int n,const vector F,intvector nietnul)
   matrix hulpma;
   vector hulpve;
  
-  /* 
-     evaluate_level(GREEN,38);
-     tijdvalkje(0,A);
-     check_dimensions(A, F);
-     */
+  evaluate_level(GREEN,38);
+  check_dimensions(Ma, F);
   
   derij=(vector)newvector(m+n);
   
@@ -112,10 +110,11 @@ void solve_4(matrix Ma, int m, int n,const vector F,intvector nietnul)
   /* First we sweep the upper part of the matrix */
   /* into an upper triangular matrix */
 
-  printf("No 1\n");
-  
   for (k=0; k<m; k++)
     { 
+
+fprintf(stderr, "processing row: %ld\n", (long)m);
+
       /* divide row by diagonal coefficient: */
       
       c = M(Ma,k,k); l=k;
@@ -202,8 +201,6 @@ void solve_4(matrix Ma, int m, int n,const vector F,intvector nietnul)
     }
   
   
-  printf("No 2\n");
-
   /* We now sweep the lower part of the matrix */
   /* into a lower triangular matrix */
   
@@ -297,7 +294,6 @@ void solve_4(matrix Ma, int m, int n,const vector F,intvector nietnul)
       /*	tijdvalkje(k+2,A);  */
     }
 
-  printf("No 3\n");
 
   /* We are now left with an upper triangular matrix and a lower triangular matrix */
   /* We now try to find an approximation for the variables corresponding to the */
@@ -442,6 +438,7 @@ void solve_gauss(const matrix A,const vector F )
   check_dimensions(A, F);
   for (k=0; k<n; k++)
   { /* divide row by diagonal coefficient: */
+    fprintf(stderr,"processing row: %d of %d\n", k, n);
     c = M(A,k,k); l=k;
     /* find largest coefficient for elimination: */
     for (m=k; m<n; m++)
@@ -453,11 +450,14 @@ void solve_gauss(const matrix A,const vector F )
 	    l = m;
       }
     }
+    fprintf(stderr," spil: %d\n", l);
     /* if (fabs(c)<=TOL) 
       evaluate_level(RED,33); */
 	/* change rows if nescessary: */
     if (k!=l)
-    { for (m=k; m<n; m++)
+    { 
+      fprintf(stderr," changing rows\n");
+      for (m=k; m<n; m++)
       { tmp = M(A,l,m);
 	    M(A,l,m) = M(A,k,m);
 	    M(A,k,m) = tmp;
@@ -470,11 +470,13 @@ void solve_gauss(const matrix A,const vector F )
     /* divide current row by diagonal coefficient: */
 	M(A,k,k)=1.0;
 	V(F,k) = V(F,k) / c;
+        fprintf(stderr," scaling row\n");
     for (i=k+1; i<n; i++)
       {  M(A,k,i) = M(A,k,i) / c;
       }
 
     /* divide remaining rows by diagonal coefficient and eliminate: */
+        fprintf(stderr," eliminating row\n");
     for (j=k+1; j<n; j++)
     { c = M(A,j,k);
 	  M(A,j,k)=0.0;
@@ -487,6 +489,7 @@ void solve_gauss(const matrix A,const vector F )
   }
 
   /* apply backsubstitution to compute the remaining unknowns: */
+        fprintf(stderr," backsubsittution\n");
   for (j=n-2; j>=0; j--)
   {
 	for (i=n-1; i>j; i--)
@@ -496,12 +499,8 @@ void solve_gauss(const matrix A,const vector F )
 
   tijdvalkje(-1,A);
 
-
   evaluate_level(GREEN,34);
 } /* solve_gauss */
-
-
-
 
 #undef  M
 #undef  V
