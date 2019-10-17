@@ -30,6 +30,7 @@ matrix main_E; vector main_f; vector main_u;
 
 int  WRITE_UNIVERSAL;
 int  WRITE_SPECIAL;
+int  WRITE_OBJ;
 int  READ_SOLUTION;
 int  LARGE_DISPLACEMENTS;
 
@@ -43,6 +44,7 @@ int freed_vectors=0;
 int main(const int argc, char *argv[] )
 { WRITE_SPECIAL = NO;
   WRITE_UNIVERSAL = NO;
+  WRITE_OBJ = NO;
   READ_SOLUTION = NO;
   LARGE_DISPLACEMENTS = NO;
 #include <text.h>

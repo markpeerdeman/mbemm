@@ -904,8 +904,6 @@ void U_write_displacements(const point plist)
   printf("    -1\n");
 } /* U_write_displacements() */
 
-
-
 void U_write_tractions(const point plist)
 { point p;
   printf("    -1\n");
@@ -940,6 +938,73 @@ void U_write_tractions(const point plist)
 } /* U_write_tractions() */
 
 
+/****************************************************************************/
+/* .OBJ FILE OUTPUT
+ ****************************************************************************/
+
+void O_write_deformed_elements_as_faces(mesh themesh)
+{ double zx, zy, zz; /* midpoint coordinates */
+  matrix stress;
+  double s1, s2, s3, mises, mismax, mismin;
+  element e; point node1, node2, node3;
+  mismax = 0.0;    // no stress
+  mismin = 1000.0; // ridiculously high stress
+
+  stress = (matrix)newmatrix(3,3);
+
+  printf("# Output created by mbemm - boundary elements method software\n");
+  printf("# Element topology is lost.\n");
+  printf("# element colors indicate Von Mises stress\n");
+  printf("mtllib materials.mtl\n");
+
+e=(element)element_dll(themesh->mesh_e,START,0);
+while (e!=(element)NULL)
+{
+  node1 = (point)point_dll(themesh->mesh_p,SEARCH,e->p1);
+  node2 = (point)point_dll(themesh->mesh_p,SEARCH,e->p2);
+  node3 = (point)point_dll(themesh->mesh_p,SEARCH,e->p3);
+
+  zx = 1.0/3.0 * ( node1->x + node2->x + node3->x );
+  zy = 1.0/3.0 * ( node1->y + node2->y + node3->y );
+  zz = 1.0/3.0 * ( node1->z + node2->z + node3->z );
+
+  M(stress,1,1) = zx;
+  M(stress,2,2) = zy;
+  M(stress,1,2) = M(stress,2,1) = zy;
+
+  /* calculate the von Mises stress for this element: */
+
+  s2 = 0.0;
+  s1 = 0.5*(M(stress,1,1)+M(stress,2,2)+sqrt( (M(stress,1,1)-M(stress,2,2))*(M(stress,1,1)-M(stress,2,2)) +
+       4.0*(M(stress,1,2)*M(stress,1,2))));
+  s3 = 0.5*(M(stress,1,1)+M(stress,2,2)-sqrt( (M(stress,1,1)-M(stress,2,2))*(M(stress,1,1)-M(stress,2,2)) +
+       4.0*(M(stress,1,2)*M(stress,1,2))));
+
+  mises = 1.0/sqrt(2.0)*sqrt( (s1-s2)*(s1-s2)+(s1-s3)*(s1-s3)+(s2-s3)*(s2-s3) );
+
+  if (mises<mismin) mismin=mises;
+  if (mises>mismax) mismax=mises;
+
+  if (mises>255.0) { mises=255.0; }
+
+    printf(" usemtl mat%d\n",(int)mises);
+    printf(" v  % 5.8E  % 5.8E  % 5.8E \n", node1->dx+node1->x, 
+      node1->dy+node1->y, node1->dz+node1->z );
+    printf(" v  % 5.8E  % 5.8E  % 5.8E \n", node2->dx+node2->x, 
+      node2->dy+node2->y, node2->dz+node2->z );
+    printf(" v  % 5.8E  % 5.8E  % 5.8E \n", node3->dx+node3->x, 
+      node3->dy+node3->y, node3->dz+node3->z );
+    printf(" f -3 -2 -1\n");
+
+  e=e->NEXT;
+}
+
+printf("# Maximum Von Mises Stress: %f\n",mismax);
+printf("# Minimum Von Mises Stress: %f\n",mismin);
+
+  delmatrix(stress);
+
+}
 
 /****************************************************************************/
 /* ENTRY POINT FOR POST OUTPUT
@@ -980,6 +1045,15 @@ if (WRITE_UNIVERSAL==YES)
   write_edge_force(theMesh);
   write_contact_node_tractions(theMesh->mesh_p); 
   write_distribution(theMesh); */
+}
+
+/**** .OBJ output **********************************************/
+if (WRITE_OBJ==YES)
+{ /* do some results output: */
+  fprintf(stderr,"* writing output in .OBJ format\n");
+  evaluate_level(GREEN,44);
+  init_post(main_f, theMesh, nr_of_nodes_body_1);
+  O_write_deformed_elements_as_faces(theMesh);
 }
 
 } /* post */

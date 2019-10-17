@@ -15,6 +15,7 @@ int do_linear(char *argv)
 { mesh mesh1;
   WRITE_SPECIAL = NO;
   WRITE_UNIVERSAL = NO;
+  WRITE_OBJ = NO;
   READ_SOLUTION = NO;
 
   /* initialize global datastructures: */
@@ -33,7 +34,13 @@ int do_linear(char *argv)
 
 if (READ_SOLUTION==NO)
   { solve_gauss(main_E,main_f);
-    printvector(main_f,"solution vector");
+    if (WRITE_OBJ==NO)
+    {
+      printvector(main_f,"solution vector");
+    } else
+    {
+      fprintf(stderr,"Solution vector is not exported because of .OBJ output");
+    }
   }
   if (READ_SOLUTION==YES)
   { fprintf(stderr,"Parsing solution vector...\n"); 
