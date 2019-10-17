@@ -438,7 +438,6 @@ void solve_gauss(const matrix A,const vector F )
   check_dimensions(A, F);
   for (k=0; k<n; k++)
   { /* divide row by diagonal coefficient: */
-    fprintf(stderr,"processing row: %d of %d\n", k, n);
     c = M(A,k,k); l=k;
     /* find largest coefficient for elimination: */
     for (m=k; m<n; m++)
@@ -450,13 +449,11 @@ void solve_gauss(const matrix A,const vector F )
 	    l = m;
       }
     }
-    fprintf(stderr," spil: %d\n", l);
     /* if (fabs(c)<=TOL) 
       evaluate_level(RED,33); */
 	/* change rows if nescessary: */
     if (k!=l)
     { 
-      fprintf(stderr," changing rows\n");
       for (m=k; m<n; m++)
       { tmp = M(A,l,m);
 	    M(A,l,m) = M(A,k,m);
@@ -470,13 +467,11 @@ void solve_gauss(const matrix A,const vector F )
     /* divide current row by diagonal coefficient: */
 	M(A,k,k)=1.0;
 	V(F,k) = V(F,k) / c;
-        fprintf(stderr," scaling row\n");
     for (i=k+1; i<n; i++)
       {  M(A,k,i) = M(A,k,i) / c;
       }
 
     /* divide remaining rows by diagonal coefficient and eliminate: */
-        fprintf(stderr," eliminating row\n");
     for (j=k+1; j<n; j++)
     { c = M(A,j,k);
 	  M(A,j,k)=0.0;
@@ -489,7 +484,6 @@ void solve_gauss(const matrix A,const vector F )
   }
 
   /* apply backsubstitution to compute the remaining unknowns: */
-        fprintf(stderr," backsubsittution\n");
   for (j=n-2; j>=0; j--)
   {
 	for (i=n-1; i>j; i--)
